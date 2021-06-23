@@ -1,6 +1,6 @@
 import "@nomiclabs/hardhat-ethers";
 import '@nomiclabs/hardhat-waffle'
-import "hardhat-typechain";
+import "@typechain/hardhat";
 import { task, HardhatUserConfig } from 'hardhat/config'
 
 
