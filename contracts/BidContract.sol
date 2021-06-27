@@ -4,13 +4,10 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
-import "./Auction.sol";
+import "./AuctionBase.sol";
 
 contract BidContract is Auction {
-    using SafeMath for uint256;
-
-  
-
+    
     modifier bidRequirements(uint256 _tokenId) {
         AuctionItem storage item = itemsList[_tokenId];
 
@@ -30,9 +27,6 @@ contract BidContract is Auction {
 
         _;
     }
-
-   
- 
 
     function _createNewBid(AuctionItem storage item) private whenNotPaused {
         item.bid = Bid(msg.value, msg.sender);
@@ -69,9 +63,5 @@ contract BidContract is Auction {
         }
 
         return false;
-    }
-
-    function claimToken(uint256 _tokenId) public claimRequirements(_tokenId) {
-        
     }
 }

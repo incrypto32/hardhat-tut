@@ -14,15 +14,10 @@ contract VocabStorToken is ERC721URIStorage {
         public
         returns (uint256)
     {
-        
         uint256 newTokenId = tokenCounter;
-        _safeMint(msg.sender, newTokenId, 
-        
-        bytes(_tokenData));
-        _setTokenURI(newTokenId, 
-        _tokenURI);
-        tokenCounter += 
-        1;
+        _safeMint(msg.sender, newTokenId, bytes(_tokenData));
+        _setTokenURI(newTokenId, _tokenURI);
+        tokenCounter += 1;
         return newTokenId;
     }
 }

@@ -14,6 +14,7 @@ describe('VocabStorToken', function () {
   let owner: SignerWithAddress
   const tokenWord = 'FCUK'
   const tokenURI = 'http://google.com/fcuk'
+
   beforeEach(async () => {
     signers = await ethers.getSigners()
     owner = signers[0]
@@ -35,11 +36,7 @@ describe('VocabStorToken', function () {
     expect(await token.balanceOf(owner.address)).to.be.equal(1)
     expect(await token.ownerOf(0)).to.be.equal(owner.address)
     expect(await token.tokenURI(0)).to.be.equal(tokenURI)
-    
+
     // expect(await token.tokenURI(0))
   })
-
-  // it('Token Transfer', async function () {
-
-  // })
 })
