@@ -6,23 +6,23 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
 import "./AuctionBase.sol";
 
-contract BidContract is Auction {
-    
+contract BidContract is AuctionBase {
     modifier bidRequirements(uint256 _tokenId) {
         AuctionItem storage item = itemsList[_tokenId];
 
         require(
             _tokenPresentInAuction(_tokenId),
-            "token is not currently in auction"
+            "BidContract : token is not currently in auction"
         );
-        require(!item.soldOut, "item sold out");
+
+        require(!item.soldOut, "BidContract : item sold out");
         require(
             msg.value >= item.basePrice,
-            "value sent must be greater than base price"
+            "BidContract : value sent must be greater than base price"
         );
         require(
             msg.value >= item.bid.amount,
-            "value sent must be greater than previous bid"
+            "BidContract : value sent must be greater than previous bid"
         );
 
         _;
@@ -43,6 +43,8 @@ contract BidContract is Auction {
         if (msg.value >= item.directBuyPrice) {
             item.soldOut = true;
         }
+
+        // TODO : Transfer money to previous bidder
 
         _createNewBid(item);
     }

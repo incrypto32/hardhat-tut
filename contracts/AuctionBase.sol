@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
 
-contract Auction is Ownable {
+contract AuctionBase is Ownable {
     using SafeMath for uint256;
 
     uint256 public nOfBidItems;
@@ -27,8 +27,8 @@ contract Auction is Ownable {
         Bid bid;
     }
 
-    mapping(uint256 => uint256[]) auctionItems;
-    mapping(uint256 => AuctionItem) itemsList;
+    mapping(uint256 => uint256[]) public auctionItems;
+    mapping(uint256 => AuctionItem) public itemsList;
 
     modifier whenNotPaused {
         require(!paused, "This functionalit is paused temporarily");
@@ -36,6 +36,7 @@ contract Auction is Ownable {
     }
 
     modifier auctionRunning {
+
         require(
             block.timestamp < endTime,
             "This functionalit is paused temporarily"
@@ -49,8 +50,9 @@ contract Auction is Ownable {
         uint256 _basePrice,
         uint256 _directBuyPrice,
         uint256 _endTime
-    ) public whenNotPaused onlyOwner() {
+    ) public whenNotPaused onlyOwner {
         require(_tokenIds.length > 0, "Empty array");
+        require(block.timestamp > endTime,"AuctionBase : another auction running");
 
         nOfBidItems = _tokenIds.length;
 
