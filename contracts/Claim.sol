@@ -8,27 +8,18 @@ import "./BidContract.sol";
 
 contract Claim is BidContract {
     event TokenClaimed(uint256 tokenId, address by);
+
     modifier claimRequirements(uint256 _tokenId) {
         AuctionItem storage item = itemsList[_tokenId];
 
-        require(
-            block.timestamp >= endTime,
-            "token is not currently in auction"
-        );
-        require(
-            item.bid.bidder == msg.sender,
-            "value sent must be greater than previous bid"
-        );
-        require(
-            item.bid.amount >= item.basePrice,
-            "value sent must be greater than base price"
-        );
+        require(!_auctionRunning(), "Claim : an auction is still running");
+
+        require(item.bid.bidder == msg.sender, "Claim : not authorized");
 
         _;
     }
 
     function claimToken(uint256 _tokenId) public claimRequirements(_tokenId) {
-        console.log("TOKEN CLAIMED : ", _tokenId, msg.sender);
         emit TokenClaimed(_tokenId, msg.sender);
     }
 }

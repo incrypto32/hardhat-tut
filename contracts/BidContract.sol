@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 import "./AuctionBase.sol";
 
 contract BidContract is AuctionBase {
+    event BidPlaced(uint256 tokenId, address by, uint256 value);
     modifier bidRequirements(uint256 _tokenId) {
         AuctionItem storage item = itemsList[_tokenId];
 
@@ -32,10 +33,18 @@ contract BidContract is AuctionBase {
         item.bid = Bid(msg.value, msg.sender);
     }
 
+    function _settlePreviousBid(AuctionItem storage item)
+        private
+        whenNotPaused
+    {
+        payable(item.bid.bidder).transfer(item.bid.amount);
+    }
+
     function bid(uint256 _tokenId)
         public
         payable
         whenNotPaused
+        auctionRunning
         bidRequirements(_tokenId)
     {
         AuctionItem storage item = itemsList[_tokenId];
@@ -45,8 +54,9 @@ contract BidContract is AuctionBase {
         }
 
         // TODO : Transfer money to previous bidder
-
+        _settlePreviousBid(item);
         _createNewBid(item);
+        emit BidPlaced(_tokenId, msg.sender, msg.value);
     }
 
     // function to check whether token is in current aution
