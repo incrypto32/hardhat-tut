@@ -29,7 +29,7 @@ describe('VocabStorToken', function () {
   })
 
   it('Mint Tokens', async function () {
-    await (await token.createToken(tokenWord, tokenURI)).wait()
+    await (await token.createToken( tokenURI)).wait()
 
     // After minting the account should have the right number of tokens
     expect(await token.tokenCounter()).to.be.equal(1)

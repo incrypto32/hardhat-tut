@@ -6,6 +6,14 @@ import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { VocabStorToken } from "../typechain/VocabStorToken";
 
+async function mintTokens(token: AuctionWrapper) {
+  await token.createToken("http://a.com");
+  await token.createToken("http://b.com");
+  await token.createToken("http://c.com");
+  await token.createToken("http://d.com");
+  await token.createToken("http://e.com");
+}
+
 describe("AuctionWrapper", function () {
   let token: VocabStorToken;
   let auction: AuctionWrapper;
@@ -27,7 +35,8 @@ describe("AuctionWrapper", function () {
 
     let AuctionContract = await ethers.getContractFactory("AuctionWrapper");
     auction = (await AuctionContract.deploy(token.address)) as AuctionWrapper;
-    await auction.deployed();
+    await token.transferOwnership(auction.address);
+    await mintTokens(auction);
   });
 
   describe("Deployment", () => {
@@ -166,10 +175,19 @@ describe("AuctionWrapper", function () {
       );
     });
 
+    it("Owner of the token should be the contract", async () => {
+      expect(await token.ownerOf(tokenIds[0])).to.be.equal(auction.address);
+    });
+
     it("Should emit TokenClaimed event", async () => {
       await expect(auction.connect(addr1).claimToken(tokenIds[0]))
         .to.emit(auction, "TokenClaimed")
         .withArgs(tokenIds[0], addr1.address);
+    });
+
+    it("Owner should change", async () => {
+      expect(await token.ownerOf(tokenIds[0])).to.be.not.equal(owner.address);
+      expect(await token.ownerOf(tokenIds[0])).to.be.equal(addr1.address);
     });
   });
 });

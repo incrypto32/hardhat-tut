@@ -20,6 +20,7 @@ contract Claim is BidContract {
     }
 
     function claimToken(uint256 _tokenId) public claimRequirements(_tokenId) {
+        token.transferFrom(address(this), msg.sender, _tokenId);
         emit TokenClaimed(_tokenId, msg.sender);
     }
 }
