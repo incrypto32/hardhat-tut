@@ -7,5 +7,7 @@ import "hardhat/console.sol";
 import "./Claim.sol";
 
 contract AuctionWrapper is Claim {
-   
+    constructor(address _tokenAddress) {
+        token = VocabStorToken(_tokenAddress);
+    }
 }

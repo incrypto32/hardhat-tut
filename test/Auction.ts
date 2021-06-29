@@ -3,12 +3,11 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import { ethers } from "hardhat";
 import { expect } from "chai";
-import { beforeEach, describe } from "mocha";
-import { Contract, ContractFactory } from "@ethersproject/contracts";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { config } from "process";
+import { VocabStorToken } from "../typechain/VocabStorToken";
 
 describe("AuctionWrapper", function () {
+  let token: VocabStorToken;
   let auction: AuctionWrapper;
   let tokenIds = [1, 2, 3, 4, 5];
   let basePrice = ethers.utils.parseEther("0.01");
@@ -23,9 +22,24 @@ describe("AuctionWrapper", function () {
     signers = await ethers.getSigners();
     owner = signers[0];
     addr1 = signers[1];
+    let VocabStorToken = await ethers.getContractFactory("VocabStorToken");
+    token = (await VocabStorToken.deploy()) as VocabStorToken;
+
     let AuctionContract = await ethers.getContractFactory("AuctionWrapper");
-    auction = (await AuctionContract.deploy()) as AuctionWrapper;
+    auction = (await AuctionContract.deploy(token.address)) as AuctionWrapper;
     await auction.deployed();
+  });
+
+  describe("Deployment", () => {
+    it("Should return the correct token address", async () => {
+      expect(await auction.token()).to.be.equal(token.address);
+    });
+    it("Should return the false for paused", async () => {
+      expect(await auction.paused()).to.be.equal(false);
+    });
+    it("Should return auctionId = 0", async () => {
+      expect(await auction.auctionId()).to.be.equal(0);
+    });
   });
 
   describe("Auction", () => {

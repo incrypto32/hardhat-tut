@@ -8,6 +8,7 @@ import "./AuctionBase.sol";
 
 contract BidContract is AuctionBase {
     event BidPlaced(uint256 tokenId, address by, uint256 value);
+
     modifier bidRequirements(uint256 _tokenId) {
         AuctionItem storage item = itemsList[_tokenId];
 

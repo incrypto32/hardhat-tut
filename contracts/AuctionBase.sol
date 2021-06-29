@@ -3,13 +3,16 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./VocabStorToken.sol";
 import "hardhat/console.sol";
 
 contract AuctionBase is Ownable {
     using SafeMath for uint256;
-
     uint256 public auctionId = 0;
     bool public paused = false;
+    VocabStorToken public token;
+
+  
 
     enum AuctionStatus {
         ENDED,
