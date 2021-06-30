@@ -1,0 +1,3 @@
+[submodule "vocabstor-web"]
+	path = vocabstor-web
+	url = git@github.com:ajayrmk/vocabstor-web.git
